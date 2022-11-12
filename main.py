@@ -50,13 +50,13 @@ class MyGame(arcade.Window):
             for vec in vectors:
                 if flag_tail:
                     arcade.draw_rectangle_filled(vec[0] * 16, vec[1] * 16,
-                                                 16, 16, arcade.color.BRICK_RED)
+                                                 8, 8, arcade.color.BRICK_RED)
                 elif flag_apple:
                     arcade.draw_rectangle_filled(vec[0] * 16, vec[1] * 16,
-                                                 16, 16, arcade.color.YELLOW)
+                                                 8, 8, arcade.color.YELLOW)
                 else:
                     arcade.draw_rectangle_outline(vec[0] * 16, vec[1] * 16,
-                                                  16, 16, arcade.color.YELLOW)
+                                                  8, 8, arcade.color.YELLOW)
                 if Vector(vec[0], vec[1]) in self.snake.tails:
                     flag_tail = True
                 elif Vector(vec[0], vec[1]) == self.apple:
@@ -106,6 +106,9 @@ class MyGame(arcade.Window):
     def place_apple(self):
         self.apple = Vector(random.randint(2, MAP_SIZE[0] - 2),
                             random.randint(2, MAP_SIZE[1] - 2))
+        while self.apple in self.snake.tails or self.apple == self.snake.head:
+            self.apple = Vector(random.randint(2, MAP_SIZE[0] - 2),
+                                random.randint(2, MAP_SIZE[1] - 2))
 
 # From http://www.roguebasin.com/index.php/Bresenham%27s_Line_Algorithm#Python
 def bresenham(start: Vector, end: Vector):
