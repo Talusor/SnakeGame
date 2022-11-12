@@ -2,12 +2,11 @@ import arcade
 import random
 from snake import Snake
 from vector import Vector
-from typing import Optional
 
 WIDTH = 640
 HEIGHT = 480
 MAP_SIZE = (int(WIDTH / 16), int(HEIGHT / 16))
-GAME_SPEED_MS = 75
+GAME_SPEED_MS = 45
 GAME_SPEED = GAME_SPEED_MS / 1000
 
 VIEW_SIGHT = 12
@@ -24,6 +23,7 @@ class MyGame(arcade.Window):
         self.perf.center_x = int(WIDTH) - int(WIDTH / 8)
         self.perf.center_y = int(HEIGHT) - int(HEIGHT / 8)
         self.perf_enable = perf
+        self.show_ray = False
 
     def setup(self):
         pass
@@ -43,25 +43,26 @@ class MyGame(arcade.Window):
                                      16, 16, arcade.color.RED)
 
 
-        for alpha in range(-30, 31, 15):
-            line = self.snake.head + Vector(VIEW_SIGHT, 0).rotate(self.snake.cur_dir + alpha)
-            vectors = bresenham(line, self.snake.head + Vector(1, 0).rotate(self.snake.cur_dir))
-            flag_apple = False
-            flag_tail = False
-            for vec in vectors:
-                if flag_tail:
-                    arcade.draw_rectangle_filled(vec[0] * 16, vec[1] * 16,
-                                                 8, 8, arcade.color.BRICK_RED)
-                elif flag_apple:
-                    arcade.draw_rectangle_filled(vec[0] * 16, vec[1] * 16,
-                                                 8, 8, arcade.color.YELLOW)
-                else:
-                    arcade.draw_rectangle_outline(vec[0] * 16, vec[1] * 16,
-                                                  8, 8, arcade.color.YELLOW)
-                if Vector(vec[0], vec[1]) in self.snake.tails:
-                    flag_tail = True
-                elif Vector(vec[0], vec[1]) == self.apple:
-                    flag_apple = True
+        if self.show_ray:
+            for alpha in range(-30, 31, 15):
+                line = self.snake.head + Vector(VIEW_SIGHT, 0).rotate(self.snake.cur_dir + alpha)
+                vectors = bresenham(line, self.snake.head + Vector(1, 0).rotate(self.snake.cur_dir))
+                flag_apple = False
+                flag_tail = False
+                for vec in vectors:
+                    if flag_tail:
+                        arcade.draw_rectangle_filled(vec[0] * 16, vec[1] * 16,
+                                                     8, 8, arcade.color.BRICK_RED)
+                    elif flag_apple:
+                        arcade.draw_rectangle_filled(vec[0] * 16, vec[1] * 16,
+                                                     8, 8, arcade.color.YELLOW)
+                    else:
+                        arcade.draw_rectangle_outline(vec[0] * 16, vec[1] * 16,
+                                                      8, 8, arcade.color.YELLOW)
+                    if Vector(vec[0], vec[1]) in self.snake.tails:
+                        flag_tail = True
+                    elif Vector(vec[0], vec[1]) == self.apple:
+                        flag_apple = True
 
         arcade.draw_rectangle_filled(self.snake.head.x * 16, self.snake.head.y * 16,
                                      16, 16, arcade.color.BRIGHT_GREEN)
@@ -97,6 +98,10 @@ class MyGame(arcade.Window):
             self.snake.next_dir = 270
         elif (symbol == arcade.key.D or symbol == arcade.key.RIGHT) and self.snake.cur_dir != 180:
             self.snake.next_dir = 0
+
+        if symbol == arcade.key.F:
+            self.show_ray = not self.show_ray
+
         pass
 
     def check_bound(self, pos: Vector) -> bool:
