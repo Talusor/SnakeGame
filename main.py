@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
         self.move_timer += delta_time
 
         if self.move_timer >= 0.1:
-            if not self.snake.move_forward():
+            if not self.snake.move_forward() or not self.check_bound(self.snake.head):
                 # Todo GameOver Screen
                 arcade.exit()
             if self.snake.head != self.apple:
@@ -62,6 +62,11 @@ class MyGame(arcade.Window):
         elif (symbol == arcade.key.D or symbol == arcade.key.RIGHT) and self.snake.cur_dir != 180:
             self.snake.next_dir = 0
         pass
+
+    def check_bound(self, pos: Vector) -> bool:
+        if 0 <= pos.x <= MAP_SIZE[0] and 0 <= pos.y <= MAP_SIZE[1]:
+            return True
+        return False
 
     def place_apple(self):
         self.apple = Vector(random.randint(2, MAP_SIZE[0] - 2),
