@@ -68,7 +68,7 @@ class MyGame(arcade.Window):
                             random.randint(2, MAP_SIZE[1] - 2))
 
 def main():
-    game = MyGame(640, 480, "Snake Game")
+    game = MyGame(WIDTH, HEIGHT, "Snake Game")
     game.setup()
     arcade.run()
 
