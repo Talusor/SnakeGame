@@ -11,6 +11,8 @@ class MyGame(arcade.Window):
     def __init__(self, width, height, title):
         super().__init__(width, height, title)
         self.snake = Snake(5, 5)
+        self.apple = Vector(random.randint(2, MAP_SIZE[0] - 2),
+                            random.randint(2, MAP_SIZE[1] - 2))
         self.move_timer = 0
 
     def setup(self):
@@ -18,6 +20,10 @@ class MyGame(arcade.Window):
 
     def on_draw(self):
         self.clear()
+
+        arcade.draw_rectangle_filled(self.apple.x * 16, self.apple.y * 16,
+                                     16, 16, arcade.color.RED)
+
         arcade.draw_rectangle_filled(self.snake.head.x * 16, self.snake.head.y * 16,
                                      16, 16, arcade.color.WHITE)
         for tail in self.snake.tails:
@@ -29,7 +35,10 @@ class MyGame(arcade.Window):
 
         if self.move_timer >= 0.1:
             self.snake.move_forward()
-            self.snake.cut_tail()
+            if self.snake.head != self.apple:
+                self.snake.cut_tail()
+            else:
+                self.place_apple()
             self.move_timer = 0
 
         pass
@@ -45,6 +54,9 @@ class MyGame(arcade.Window):
             self.snake.next_dir = 0
         pass
 
+    def place_apple(self):
+        self.apple = Vector(random.randint(2, MAP_SIZE[0] - 2),
+                            random.randint(2, MAP_SIZE[1] - 2))
 
 def main():
     game = MyGame(640, 480, "Snake Game")
