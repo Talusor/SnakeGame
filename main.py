@@ -14,12 +14,18 @@ class MyGame(arcade.Window):
         self.apple = Vector(random.randint(2, MAP_SIZE[0] - 2),
                             random.randint(2, MAP_SIZE[1] - 2))
         self.move_timer = 0
+        self.score = 0
 
     def setup(self):
         pass
 
     def on_draw(self):
         self.clear()
+
+        arcade.draw_text(f'Score: {self.score}',
+                         6, HEIGHT - 24,
+                         arcade.color.DUTCH_WHITE,
+                         12)
 
         arcade.draw_rectangle_filled(self.apple.x * 16, self.apple.y * 16,
                                      16, 16, arcade.color.RED)
@@ -38,6 +44,7 @@ class MyGame(arcade.Window):
             if self.snake.head != self.apple:
                 self.snake.cut_tail()
             else:
+                self.score += 1
                 self.place_apple()
             self.move_timer = 0
 
