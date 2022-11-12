@@ -6,6 +6,8 @@ from vector import Vector
 WIDTH = 640
 HEIGHT = 480
 MAP_SIZE = (int(WIDTH / 16), int(HEIGHT / 16))
+GAME_SPEED_MS = 50
+GAME_SPEED = GAME_SPEED_MS / 1000
 
 class MyGame(arcade.Window):
     def __init__(self, width, height, title):
@@ -39,7 +41,7 @@ class MyGame(arcade.Window):
     def on_update(self, delta_time: float):
         self.move_timer += delta_time
 
-        if self.move_timer >= 0.1:
+        if self.move_timer >= GAME_SPEED:
             if not self.snake.move_forward() or not self.check_bound(self.snake.head):
                 # Todo GameOver Screen
                 arcade.exit()
