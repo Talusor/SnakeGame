@@ -6,7 +6,7 @@ from vector import Vector
 WIDTH = 640
 HEIGHT = 480
 MAP_SIZE = (int(WIDTH / 16), int(HEIGHT / 16))
-GAME_SPEED_MS = 50
+GAME_SPEED_MS = 75
 GAME_SPEED = GAME_SPEED_MS / 1000
 
 class MyGame(arcade.Window):
@@ -33,10 +33,10 @@ class MyGame(arcade.Window):
                                      16, 16, arcade.color.RED)
 
         arcade.draw_rectangle_filled(self.snake.head.x * 16, self.snake.head.y * 16,
-                                     16, 16, arcade.color.WHITE)
+                                     16, 16, arcade.color.BRIGHT_GREEN)
         for tail in self.snake.tails:
             arcade.draw_rectangle_filled(tail.x * 16, tail.y * 16,
-                                         16, 16, arcade.color.WHITE)
+                                         16, 16, arcade.color.GREEN)
 
     def on_update(self, delta_time: float):
         self.move_timer += delta_time
