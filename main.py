@@ -20,10 +20,10 @@ class MyGame(arcade.Window):
                             random.randint(2, MAP_SIZE[1] - 2))
         self.move_timer = 0
         self.score = 0
-        self.perf: Optional[arcade.perf_graph.PerfGraph] = None
         self.perf = arcade.perf_graph.PerfGraph(int(WIDTH / 4), int(HEIGHT / 4))
         self.perf.center_x = int(WIDTH) - int(WIDTH / 8)
         self.perf.center_y = int(HEIGHT) - int(HEIGHT / 8)
+        self.perf_enable = perf
 
     def setup(self):
         pass
@@ -31,7 +31,8 @@ class MyGame(arcade.Window):
     def on_draw(self):
         self.clear()
 
-        self.perf.draw()
+        if self.perf_enable:
+            self.perf.draw()
 
         arcade.draw_text(f'Score: {self.score}',
                          6, HEIGHT - 24,
