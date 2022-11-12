@@ -8,10 +8,13 @@ class Snake:
         self.cur_dir = 0
         self.next_dir = 0
 
-    def move_forward(self):
+    def move_forward(self) -> bool:
+        if self.head in self.tails:
+            return False
         self.tails.append(self.head)
         self.head += self.unitVec.rotate(self.next_dir)
         self.cur_dir = self.next_dir
+        return True
 
     def cut_tail(self):
         self.tails = self.tails[1:]

@@ -40,7 +40,9 @@ class MyGame(arcade.Window):
         self.move_timer += delta_time
 
         if self.move_timer >= 0.1:
-            self.snake.move_forward()
+            if not self.snake.move_forward():
+                # Todo GameOver Screen
+                arcade.exit()
             if self.snake.head != self.apple:
                 self.snake.cut_tail()
             else:
