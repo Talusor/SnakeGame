@@ -6,7 +6,7 @@ from vector import Vector
 WIDTH = 640
 HEIGHT = 480
 MAP_SIZE = (int(WIDTH / 16), int(HEIGHT / 16))
-GAME_SPEED_MS = 45
+GAME_SPEED_MS = 200
 GAME_SPEED = GAME_SPEED_MS / 1000
 
 VIEW_SIGHT = 12
@@ -24,6 +24,11 @@ class MyGame(arcade.Window):
         self.perf.center_y = int(HEIGHT) - int(HEIGHT / 8)
         self.perf_enable = perf
         self.show_ray = False
+        self.show_view_box = False
+        self.view_box = []
+        for x in range(1, VIEW_SIGHT + 1):
+            for y in range(-3 - int(x / 4), 4 + int(x / 4)):
+                self.view_box.append(Vector(x, y))
 
     def setup(self):
         pass
@@ -42,6 +47,19 @@ class MyGame(arcade.Window):
         arcade.draw_rectangle_filled(self.apple.x * 16, self.apple.y * 16,
                                      16, 16, arcade.color.RED)
 
+
+        if self.show_view_box:
+            line = []
+            for vec in self.view_box:
+                box = self.snake.head + vec.rotate(self.snake.cur_dir)
+                box.toInt()
+                if box == self.apple:
+                    line = bresenham(self.snake.head + Vector(1, 0).rotate(self.snake.cur_dir), self.apple)
+                arcade.draw_rectangle_outline(box.x * 16, box.y * 16,
+                                              8, 8, arcade.color.YELLOW)
+            for vec in line:
+                arcade.draw_rectangle_filled(vec[0] * 16, vec[1] * 16,
+                                             8, 8, arcade.color.YELLOW)
 
         if self.show_ray:
             for alpha in range(-30, 31, 15):
@@ -77,7 +95,7 @@ class MyGame(arcade.Window):
         self.perf.on_update(delta_time)
 
         if self.move_timer >= GAME_SPEED:
-            if not self.snake.move_forward() or not self.check_bound(self.snake.head):
+            if not self.snake.move_forward() or not check_bound(self.snake.head):
                 # Todo GameOver Screen
                 arcade.exit()
             if self.snake.head != self.apple:
@@ -101,13 +119,15 @@ class MyGame(arcade.Window):
 
         if symbol == arcade.key.F:
             self.show_ray = not self.show_ray
+            if self.show_ray:
+                self.show_view_box = False
+
+        if symbol == arcade.key.G:
+            self.show_view_box = not self.show_view_box
+            if self.show_view_box:
+                self.show_ray = False
 
         pass
-
-    def check_bound(self, pos: Vector) -> bool:
-        if 0 <= pos.x <= MAP_SIZE[0] and 0 <= pos.y <= MAP_SIZE[1]:
-            return True
-        return False
 
     def place_apple(self):
         self.apple = Vector(random.randint(2, MAP_SIZE[0] - 2),
@@ -115,6 +135,11 @@ class MyGame(arcade.Window):
         while self.apple in self.snake.tails or self.apple == self.snake.head:
             self.apple = Vector(random.randint(2, MAP_SIZE[0] - 2),
                                 random.randint(2, MAP_SIZE[1] - 2))
+
+def check_bound(pos: Vector) -> bool:
+    if 0 <= pos.x <= MAP_SIZE[0] and 0 <= pos.y <= MAP_SIZE[1]:
+        return True
+    return False
 
 # From http://www.roguebasin.com/index.php/Bresenham%27s_Line_Algorithm#Python
 def bresenham(start: Vector, end: Vector):
